@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PayloadForge — Encoder & Obfuscation Framework</title>
+  <meta name="description" content="Educational payload encoding and obfuscation framework for cybersecurity research and red/blue team analysis." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Animated Background -->
+  <div class="bg-grid"></div>
+  <div class="bg-glow glow-1"></div>
+  <div class="bg-glow glow-2"></div>
+  <div class="bg-glow glow-3"></div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <rect x="2" y="2" width="12" height="12" rx="2" fill="url(#g1)"/>
+            <rect x="18" y="2" width="12" height="12" rx="2" fill="url(#g2)" opacity="0.7"/>
+            <rect x="2" y="18" width="12" height="12" rx="2" fill="url(#g2)" opacity="0.7"/>
+            <rect x="18" y="18" width="12" height="12" rx="2" fill="url(#g1)"/>
+            <defs>
+              <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+                <stop stop-color="#00ff88"/>
+                <stop offset="1" stop-color="#00ccff"/>
+              </linearGradient>
+              <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+                <stop stop-color="#ff0099"/>
+                <stop offset="1" stop-color="#7700ff"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-name">PayloadForge</span>
+          <span class="logo-tag">Encoder &amp; Obfuscation Framework</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="status-badge">
+          <span class="status-dot"></span>
+          <span>Lab Mode Active</span>
+        </div>
+        <div class="disclaimer-btn" id="disclaimerToggle">⚠ Disclaimer</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Disclaimer Banner -->
+  <div class="disclaimer-banner" id="disclaimerBanner">
+    <div class="disclaimer-inner">
+      <span class="disclaimer-icon">🛡</span>
+      <span><strong>Educational Use Only.</strong> This framework is designed for controlled lab environments, red/blue team research, and cybersecurity education. Unauthorized use of payload encoding or obfuscation against systems you do not own is illegal. Always obtain proper authorization.</span>
+      <button class="disclaimer-close" id="disclaimerClose">✕</button>
+    </div>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <nav class="nav-tabs">
+    <div class="nav-inner">
+      <button class="tab-btn active" data-tab="encoder" id="tab-encoder">
+        <span class="tab-icon">🔐</span> Encoder
+      </button>
+      <button class="tab-btn" data-tab="obfuscator" id="tab-obfuscator">
+        <span class="tab-icon">🌀</span> Obfuscator
+      </button>
+      <button class="tab-btn" data-tab="evasion" id="tab-evasion">
+        <span class="tab-icon">🎯</span> Evasion Test
+      </button>
+      <button class="tab-btn" data-tab="pipeline" id="tab-pipeline">
+        <span class="tab-icon">⚡</span> Full Pipeline
+      </button>
+      <button class="tab-btn" data-tab="reports" id="tab-reports">
+        <span class="tab-icon">📊</span> Reports
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main">
+
+    <!-- ============================================================
+         TAB: ENCODER
+    ============================================================ -->
+    <div class="tab-panel active" id="panel-encoder">
+      <div class="panel-header">
+        <h1 class="panel-title">Payload Encoder</h1>
+        <p class="panel-desc">Apply Base64, XOR, ROT13, or Hex encoding — individually or in multi-layer chains.</p>
+      </div>
+
+      <div class="two-col">
+        <!-- Controls -->
+        <div class="card">
+          <div class="card-header">Input &amp; Configuration</div>
+          <div class="card-body">
+            <label class="field-label">Payload Input</label>
+            <textarea class="code-input" id="enc-payload" rows="6" placeholder="Enter your payload here...&#10;e.g. cmd.exe /c powershell -enc ..."></textarea>
+
+            <label class="field-label">Encoding Method</label>
+            <div class="method-grid" id="enc-method-grid">
+              <label class="method-card selected" data-method="base64">
+                <input type="radio" name="enc-method" value="base64" checked hidden />
+                <span class="method-icon">📦</span>
+                <span class="method-name">Base64</span>
+                <span class="method-desc">RFC 4648 standard encoding</span>
+              </label>
+              <label class="method-card" data-method="xor">
+                <input type="radio" name="enc-method" value="xor" hidden />
+                <span class="method-icon">⊕</span>
+                <span class="method-name">XOR</span>
+                <span class="method-desc">Key-based encryption</span>
+              </label>
+              <label class="method-card" data-method="rot13">
+                <input type="radio" name="enc-method" value="rot13" hidden />
+                <span class="method-icon">🔄</span>
+                <span class="method-name">ROT13</span>
+                <span class="method-desc">Caesar substitution cipher</span>
+              </label>
+              <label class="method-card" data-method="hex">
+                <input type="radio" name="enc-method" value="hex" hidden />
+                <span class="method-icon">0x</span>
+                <span class="method-name">Hex</span>
+                <span class="method-desc">Hexadecimal representation</span>
+              </label>
+            </div>
+
+            <div class="xor-options" id="xor-options" style="display:none">
+              <label class="field-label">XOR Key</label>
+              <input class="text-input" id="xor-key" type="text" value="K3Y" placeholder="Enter XOR key..." />
+            </div>
+
+            <!-- Multi-layer section -->
+            <div class="section-divider">
+              <span>Multi-Layer Encoding</span>
+            </div>
+            <label class="field-label">Layer Chain (drag to reorder)</label>
+            <div class="layer-chain" id="layer-chain">
+              <div class="layer-chip selected" data-layer="base64">Base64</div>
+              <div class="layer-chip" data-layer="xor">XOR</div>
+              <div class="layer-chip" data-layer="rot13">ROT13</div>
+              <div class="layer-chip" data-layer="hex">Hex</div>
+            </div>
+            <div class="btn-row">
+              <button class="btn btn-primary" id="enc-single-btn">
+                <span>▶ Encode Single</span>
+              </button>
+              <button class="btn btn-secondary" id="enc-multi-btn">
+                <span>⛓ Encode Multi-Layer</span>
+              </button>
+              <button class="btn btn-ghost" id="enc-decode-btn">
+                <span>↩ Decode</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Output -->
+        <div class="card">
+          <div class="card-header">
+            Encoded Output
+            <button class="copy-btn" id="enc-copy-btn">Copy</button>
+          </div>
+          <div class="card-body" id="enc-output-area">
+            <div class="empty-state">
+              <div class="empty-icon">🔐</div>
+              <p>Run an encoding to see results here</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         TAB: OBFUSCATOR
+    ============================================================ -->
+    <div class="tab-panel" id="panel-obfuscator">
+      <div class="panel-header">
+        <h1 class="panel-title">String Obfuscator</h1>
+        <p class="panel-desc">Apply advanced string obfuscation techniques to evade pattern-based detection.</p>
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header">Input &amp; Technique</div>
+          <div class="card-body">
+            <label class="field-label">Payload Input</label>
+            <textarea class="code-input" id="obf-payload" rows="5" placeholder="Enter payload string..."></textarea>
+
+            <label class="field-label">Obfuscation Technique</label>
+            <select class="select-input" id="obf-technique">
+              <option value="random_char">🎲 Random Character Insertion</option>
+              <option value="char_split">✂ Character Split &amp; Concatenation</option>
+              <option value="reverse">↔ Reversal Transform</option>
+              <option value="escape_hex">🔣 Escape Sequence — Hex (\\x41)</option>
+              <option value="escape_unicode">🔣 Escape Sequence — Unicode (\\u0041)</option>
+              <option value="escape_octal">🔣 Escape Sequence — Octal</option>
+              <option value="case_scramble">🔀 Case Scrambling</option>
+              <option value="null_byte">💉 Null-Byte / Delimiter Injection</option>
+              <option value="identifier_sub">🏷 Identifier Substitution</option>
+            </select>
+
+            <div class="btn-row" style="margin-top:20px">
+              <button class="btn btn-primary" id="obf-single-btn">▶ Apply Technique</button>
+              <button class="btn btn-accent" id="obf-all-btn">🌐 Apply All Techniques</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            Obfuscation Result
+            <button class="copy-btn" id="obf-copy-btn">Copy</button>
+          </div>
+          <div class="card-body" id="obf-output-area">
+            <div class="empty-state">
+              <div class="empty-icon">🌀</div>
+              <p>Apply a technique to see obfuscated output</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- All techniques comparison table -->
+      <div class="card" id="obf-all-card" style="display:none; margin-top:24px">
+        <div class="card-header">All Techniques — Comparative View</div>
+        <div class="card-body" id="obf-all-table"></div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         TAB: EVASION TEST
+    ============================================================ -->
+    <div class="tab-panel" id="panel-evasion">
+      <div class="panel-header">
+        <h1 class="panel-title">Evasion Testing Engine</h1>
+        <p class="panel-desc">Simulate signature-based detection and measure how obfuscation techniques bypass static analysis.</p>
+      </div>
+
+      <!-- Scan single payload -->
+      <div class="card">
+        <div class="card-header">Quick Signature Scan</div>
+        <div class="card-body">
+          <div class="two-col-inline">
+            <div class="flex-col">
+              <label class="field-label">Payload to Scan</label>
+              <textarea class="code-input" id="ev-payload" rows="4" placeholder="Enter payload to test against signature database..."></textarea>
+            </div>
+            <div class="flex-col">
+              <label class="field-label">XOR Key (for evasion comparison)</label>
+              <input class="text-input" id="ev-xor-key" value="K3Y" />
+              <div class="btn-col" style="margin-top:12px">
+                <button class="btn btn-primary" id="ev-scan-btn">🔍 Quick Scan</button>
+                <button class="btn btn-accent" id="ev-full-btn">🎯 Full Evasion Test</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scan result -->
+      <div class="card" id="ev-scan-card" style="display:none; margin-top:24px">
+        <div class="card-header">Signature Scan Result</div>
+        <div class="card-body" id="ev-scan-result"></div>
+      </div>
+
+      <!-- Evasion comparison -->
+      <div class="card" id="ev-full-card" style="display:none; margin-top:24px">
+        <div class="card-header">Evasion Test — Comparative Analysis</div>
+        <div class="card-body" id="ev-full-result"></div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         TAB: FULL PIPELINE
+    ============================================================ -->
+    <div class="tab-panel" id="panel-pipeline">
+      <div class="panel-header">
+        <h1 class="panel-title">Full Analysis Pipeline</h1>
+        <p class="panel-desc">Run the complete framework workflow: encode → obfuscate → test → report.</p>
+      </div>
+
+      <!-- Pipeline flowchart -->
+      <div class="pipeline-flow">
+        <div class="flow-step">
+          <div class="flow-num">1</div>
+          <div class="flow-label">Load Payload</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="flow-num">2</div>
+          <div class="flow-label">Encode</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="flow-num">3</div>
+          <div class="flow-label">Obfuscate</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="flow-num">4</div>
+          <div class="flow-label">Evasion Test</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="flow-num">5</div>
+          <div class="flow-label">Report</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Pipeline Configuration</div>
+        <div class="card-body">
+          <label class="field-label">Payload Input</label>
+          <textarea class="code-input" id="pipe-payload" rows="5" placeholder="Enter payload to run through the full pipeline...&#10;&#10;Example: cmd.exe /c powershell -encodedCommand ..."></textarea>
+
+          <div class="two-col-inline" style="margin-top:16px">
+            <div>
+              <label class="field-label">XOR Key</label>
+              <input class="text-input" id="pipe-xor-key" value="K3Y" />
+            </div>
+            <div>
+              <label class="field-label">Multi-Layer Sequence</label>
+              <div class="layer-chain small" id="pipe-layer-chain">
+                <div class="layer-chip selected" data-layer="base64">Base64</div>
+                <div class="layer-chip selected" data-layer="xor">XOR</div>
+                <div class="layer-chip" data-layer="rot13">ROT13</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="btn-row" style="margin-top:20px">
+            <button class="btn btn-accent btn-lg" id="pipe-run-btn">
+              ⚡ Run Full Pipeline
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="pipe-results" style="display:none">
+        <!-- Results rendered here -->
+      </div>
+    </div>
+
+    <!-- ============================================================
+         TAB: REPORTS
+    ============================================================ -->
+    <div class="tab-panel" id="panel-reports">
+      <div class="panel-header">
+        <h1 class="panel-title">Analysis Reports</h1>
+        <p class="panel-desc">View and download generated framework analysis reports.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          Saved Reports
+          <button class="btn btn-ghost btn-sm" id="refresh-reports-btn">↻ Refresh</button>
+        </div>
+        <div class="card-body" id="reports-list">
+          <div class="empty-state">
+            <div class="empty-icon">📊</div>
+            <p>No reports yet. Run the Full Pipeline to generate one.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="report-viewer-card" style="display:none; margin-top:24px">
+        <div class="card-header">
+          Report Viewer
+          <button class="btn btn-ghost btn-sm" id="close-report-btn">✕ Close</button>
+        </div>
+        <div class="card-body" id="report-viewer-body"></div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Loading overlay -->
+  <div class="loading-overlay" id="loading-overlay" style="display:none">
+    <div class="loader-ring"></div>
+    <div class="loader-text" id="loader-text">Processing...</div>
+  </div>
+
+  <!-- Toast notifications -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
